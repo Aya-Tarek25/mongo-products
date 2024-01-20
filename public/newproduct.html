@@ -3,131 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Product Form</title>
 </head>
 <body>
-    <form id="form" action="http://localhost:8000/product/addProduct" method="post">
+    <form id="productForm">
         <label for="id">ID:</label>
-        <input type="text" id="id" name="id" required="">
-        <label for="productName">Product Name:</label>
-        <input type="text" id="product" name="product" required="">
+        <input type="text" id="id" name="id" required>
+
+        <label for="product">Product:</label>
+        <input type="text" id="product" name="product" required>
 
         <label for="price">Price:</label>
-        <input type="number" id="price" name="price" step="0.01" required="">
+        <input type="number" id="price" name="price" required>
 
         <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required="">
+        <input type="number" id="quantity" name="quantity" required>
 
-        <button id="addproduct" type="submit">Add Product</button>
-        <button onclick="editProduct()">Edit Product</button>
-       </form>
+        <button type="submit">Add Product</button>
+        <button type="button" onclick="editProduct()">Edit Product</button>
+    </form>
 
-     <script>
-          const id = document.getElementById('id').value;
-     const product = document.getElementById('product').value;
-     const price = document.getElementById('price').value;
-    const quantity = document.getElementById('quantity').value;
-       const  form =document.getElementById('form');
- 
-const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
+    <script>
+        const productForm = document.getElementById('productForm');
 
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
+        productForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
+            const id = document.getElementById('id').value;
+            const product = document.getElementById('product').value;
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
 
-  const raw = JSON.stringify({
-    id:id,
-    product: product,
-    price: price,
-    quantity: quantity,
-  });
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
 
-  const requestOptions = {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
+            const raw = JSON.stringify({ id, product, price, quantity });
 
-  fetch("http://localhost:8000/product/addProduct", requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .then(data => {
-        getUsers(data);
-      })
-    .catch((error) => console.log("error", error));
-    
-});
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
 
-//    async function addProduct() {
+            try {
+                const response = await fetch("http://localhost:8000/product/addProduct", requestOptions);
 
-//     console.log('Client-side data:', { id, product, price, quantity });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
-//     const response = await fetch('http://localhost:8000/product/addProduct', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//             id,
-//             product,
-//             price,
-//             quantity,
-//         }),
-//     });
+                const result = await response.json();
+                console.log(result);
 
-//     console.log('Server response:', response);
+            
+                redirecthome() ;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
 
-//     // if (response.ok) {
-//     //     try {
-//     //         const data = await response.json();
-//     //         console.log('Server data:', data);
+        function editProduct() {
+            const id = document.getElementById('id').value;
+            const product = document.getElementById('product').value;
+            const price = document.getElementById('price').value;
+            const quantity = document.getElementById('quantity').value;
 
-//     //         if (data) {
-//     //             console.log(data);
-                
-//     //         } else {
-                
-//     //             console.error('Server error:', data.error);
-               
-//     //         }
-//     //     } catch (error) {
-//     //         console.log('Error parsing JSON:', error);
-//     //     }
-//     // } else {
-//     //    res.status(500).send('server error')
-       
-//     // }
-// } -->
-
+            fetch(`http://localhost:8000/product/editProduct/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, product, price, quantity }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+            redirecthome() 
+        }
         async function redirecthome() {
             window.location.href = 'http://localhost:8000/home.html';
         }
         
-
-    // async function editProduct() {
-   
-    // const id = parseInt(document.getElementById('id').value);
-    // const product = document.getElementById('product').value;
-    //  const price = parseFloat(document.getElementById('price').value);
-    //  const quantity = parseInt(document.getElementById('quantity').value);
-    // const response = await fetch(`http://localhost:8000/product/editProduct/${id}`, {
-    //     method: 'PATCH',
-    //             body: JSON.stringify({
-    //                 id,
-    //                 product,
-    //                 price,
-    //                 quantity
-    //             }),
-    //         });
-    // console.log(response);
-    // const data = await response.json();
-  
-    
-    // }
-
     </script>
-   
 </body>
 </html>
