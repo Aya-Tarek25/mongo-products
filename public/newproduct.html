@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" action="http://localhost:8000/product/addProduct" method="post">
+        <label for="id">ID:</label>
+        <input type="text" id="id" name="id" required="">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="product" name="product" required="">
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" step="0.01" required="">
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required="">
+
+        <button id="addproduct" type="submit">Add Product</button>
+        <button onclick="editProduct()">Edit Product</button>
+       </form>
+
+     <script>
+          const id = document.getElementById('id').value;
+     const product = document.getElementById('product').value;
+     const price = document.getElementById('price').value;
+    const quantity = document.getElementById('quantity').value;
+       const  form =document.getElementById('form');
+ 
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+
+  const raw = JSON.stringify({
+    id:id,
+    product: product,
+    price: price,
+    quantity: quantity,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  fetch("http://localhost:8000/product/addProduct", requestOptions)
+    .then((response) => response.json())
+    .then((result) => console.log(result))
+    .then(data => {
+        getUsers(data);
+      })
+    .catch((error) => console.log("error", error));
+    
+});
+
+//    async function addProduct() {
+
+//     console.log('Client-side data:', { id, product, price, quantity });
+
+//     const response = await fetch('http://localhost:8000/product/addProduct', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             id,
+//             product,
+//             price,
+//             quantity,
+//         }),
+//     });
+
+//     console.log('Server response:', response);
+
+//     // if (response.ok) {
+//     //     try {
+//     //         const data = await response.json();
+//     //         console.log('Server data:', data);
+
+//     //         if (data) {
+//     //             console.log(data);
+                
+//     //         } else {
+                
+//     //             console.error('Server error:', data.error);
+               
+//     //         }
+//     //     } catch (error) {
+//     //         console.log('Error parsing JSON:', error);
+//     //     }
+//     // } else {
+//     //    res.status(500).send('server error')
+       
+//     // }
+// } -->
+
+        async function redirecthome() {
+            window.location.href = 'http://localhost:8000/home.html';
+        }
+        
+
+    // async function editProduct() {
+   
+    // const id = parseInt(document.getElementById('id').value);
+    // const product = document.getElementById('product').value;
+    //  const price = parseFloat(document.getElementById('price').value);
+    //  const quantity = parseInt(document.getElementById('quantity').value);
+    // const response = await fetch(`http://localhost:8000/product/editProduct/${id}`, {
+    //     method: 'PATCH',
+    //             body: JSON.stringify({
+    //                 id,
+    //                 product,
+    //                 price,
+    //                 quantity
+    //             }),
+    //         });
+    // console.log(response);
+    // const data = await response.json();
+  
+    
+    // }
+
+    </script>
+   
+</body>
+</html>

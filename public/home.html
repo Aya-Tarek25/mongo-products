@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #products {
+            
+            border-radius: 5px;
+            border: 1px solid rgb(246, 242, 242);
+            width:1000px;
+            border-collapse: collapse;
+        }
+       img{
+        width:35px;
+        height: 35px;
+       }
+             th {
+            background-color: #4fb682;
+             color: white;
+             padding: 15px;
+             border-bottom: 1px solid #ddd;
+        }
+      td {
+           text-align: center;
+           padding:5px;
+           border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {background-color: #f2f2f2;}
+        button{
+            padding: 10px;
+            background-color:#4fb682;
+        }
+    </style>
+</head>
+<body>
+   <div class="container">
+    <h1>Product List</h1>
+    <button onclick="addProduct()">Add New Product</button>
+    <table id="products">
+      
+    </table>
+   </div> 
+</body>
+<script>
+    async function fetchproducts() {
+        const productlist = document.getElementById('products');
+        const response = await fetch('http://localhost:8000/product/getProducts');
+        const data = await response.json();
+        console.log(data);
+        productlist.innerHTML += `<tr> <th>Id</th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Action</th>
+        </tr>`
+        data.forEach(product => {
+            productlist.innerHTML += `
+                <tr>
+                    <td>${product.id}</td>
+                    <td>${product.product}</td>
+                    <td> ${product.price}</td>
+                    <td>${product.quantity}</td>
+                    <td>
+                    <a onclick="editProduct(${product.id})"><img src="edit-image-icon-27.jpg"></a>
+                    <a onclick="deleteProduct('${product.product}')"><img src="depositphotos_42624533-stock-illustration-delete-icon.jpg"></a>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    fetchproducts();
+    
+
+    async function deleteProduct(product) {
+   
+    const response = await fetch(`http://localhost:8000/product/deleteProduct/${product}`, {
+    method: 'DELETE',
+   });
+    console.log(response);
+    const data = await response.json();
+    const productlist = document.getElementById('products');
+    productlist.innerHTML = "";
+    fetchproducts();
+    //console.log(data); 
+    }
+
+    // async function addProduct() {
+    //        const response = await fetch('http://localhost:8000/product/addProduct', {
+    //            method: 'POST',
+    //            headers: {
+    //                'Content-Type': 'application/json',
+    //            },
+    //            body: JSON.stringify({
+    //                id:16,
+    //                product: 'New Product',
+    //                price: 19.99,
+    //                quantity: 10,
+    //            }),
+    //        });
+    //        console.log(response);
+    //        const data = await response.json();
+    //        console.log(data);
+
+    //        // Fetch products after adding a new one
+    //        fetchProducts();
+    //    }
+
+
+    function addProduct() {
+  window.location.href = 'http://localhost:8000/newproduct.html';
+}
+function editProduct(id) {
+  window.location.href = 'http://localhost:8000/newproduct.html';
+}
+    
+</script>
+</html>
